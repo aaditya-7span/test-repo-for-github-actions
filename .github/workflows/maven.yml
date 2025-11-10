@@ -1,7 +1,7 @@
 name: Java Maven Build & EC2 Deployment
 
 on:
-  workflow_dispatch:   # manual trigger
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -9,8 +9,6 @@ jobs:
 
     env:
       PROFILE: "staging"
-
-      # 🔧 Fill your details below manually for now
       ALLOWED_USERS: "aaditya-7span"
       EC2_USER: "ubuntu"
       EC2_HOST: "ec2-65-1-132-62.ap-south-1.compute.amazonaws.com"
@@ -19,7 +17,6 @@ jobs:
       EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
 
     steps:
-      # Step 1: ✅ Access control
       - name: Check if actor is allowed
         run: |
           allowed_users="${{ env.ALLOWED_USERS }}"
@@ -39,11 +36,9 @@ jobs:
             echo "✅ Access granted. Running workflow as $actor"
           fi
 
-      # Step 2: Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 3: Setup Java
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -51,26 +46,27 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Step 4: Build with Maven
       - name: Build JAR
         run: mvn -B clean package --file pom.xml
 
-      # Step 5: Setup SSH connection
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ env.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ env.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      # Step 6: Upload JAR to EC2
+      - name: Test SSH Connection
+        run: |
+          echo "🔑 Testing SSH connection..."
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "echo '✅ Connected to EC2 successfully!'"
+
       - name: Upload JAR to EC2
         run: |
           echo "📦 Uploading JAR file to EC2..."
           scp -i ~/.ssh/id_rsa -P 22 target/*.jar \
           ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:${{ env.REMOTE_APP_PATH }}
 
-      # Step 7: Deploy on EC2 (Run deploy.sh)
       - name: Run deployment script on EC2
         run: |
           echo "🚀 Running deployment script on EC2..."
