@@ -19,35 +19,35 @@ DEPLOY_LOG="${LOG_DIR}/deploy_$(date +'%Y-%m-%d_%H-%M-%S').log"
 mkdir -p "$BUILD_DIR" "$PROD_DIR" "$BACKUP_DIR" "$LOG_DIR" "/opt/testiqo/logs"
 
 echo "--------------------------------------------" | tee -a "$DEPLOY_LOG"
-echo "🚀 Starting deployment for ${APP_NAME}" | tee -a "$DEPLOY_LOG"
-echo "📅 Timestamp: $(date)" | tee -a "$DEPLOY_LOG"
+echo "Starting deployment for ${APP_NAME}" | tee -a "$DEPLOY_LOG"
+echo "Timestamp: $(date)" | tee -a "$DEPLOY_LOG"
 echo "--------------------------------------------" | tee -a "$DEPLOY_LOG"
 
-echo "🛑 Stopping existing process..." | tee -a "$DEPLOY_LOG"
+echo "Stopping existing process..." | tee -a "$DEPLOY_LOG"
 pkill -f "${APP_NAME}.jar" 2>/dev/null || echo "No running process found." | tee -a "$DEPLOY_LOG"
 
 # ---- BACKUP OLD JAR ----
 if [ -f "$PROD_DIR/${APP_NAME}.jar" ]; then
-  echo "📦 Backing up current JAR as previous version..." | tee -a "$DEPLOY_LOG"
+  echo "Backing up current JAR as previous version..." | tee -a "$DEPLOY_LOG"
   cp -f "$PROD_DIR/${APP_NAME}.jar" "$BACKUP_DIR/${APP_NAME}_previous.jar"
-  echo "✅ Previous JAR stored at: $BACKUP_DIR/${APP_NAME}_previous.jar" | tee -a "$DEPLOY_LOG"
+  echo "Previous JAR stored at: $BACKUP_DIR/${APP_NAME}_previous.jar" | tee -a "$DEPLOY_LOG"
 else
-  echo "ℹ️ No existing JAR found in $PROD_DIR — skipping backup." | tee -a "$DEPLOY_LOG"
+  echo "No existing JAR found in $PROD_DIR — skipping backup." | tee -a "$DEPLOY_LOG"
 fi
 
 NEW_JAR=$(ls -t "$BUILD_DIR"/*.jar 2>/dev/null | head -n 1)
 if [ -z "$NEW_JAR" ]; then
-  echo "❌ ERROR: No JAR file found in $BUILD_DIR" | tee -a "$DEPLOY_LOG"
+  echo "ERROR: No JAR file found in $BUILD_DIR" | tee -a "$DEPLOY_LOG"
   exit 1
 fi
 
-echo "📁 Moving new JAR to production directory..." | tee -a "$DEPLOY_LOG"
+echo "Moving new JAR to production directory..." | tee -a "$DEPLOY_LOG"
 mv "$NEW_JAR" "$PROD_DIR/${APP_NAME}.jar"
 
-echo "▶️ Starting ${APP_NAME}..." | tee -a "$DEPLOY_LOG"
+echo "Starting ${APP_NAME}..." | tee -a "$DEPLOY_LOG"
 nohup java -jar "$PROD_DIR/${APP_NAME}.jar" > "$APP_LOG" 2>&1 &
 
-echo "✅ Application started successfully!" | tee -a "$DEPLOY_LOG"
+echo "Application started successfully!" | tee -a "$DEPLOY_LOG"
 echo "--------------------------------------------" | tee -a "$DEPLOY_LOG"
-echo "🎉 Deployment completed successfully for ${APP_NAME}" | tee -a "$DEPLOY_LOG"
+echo "Deployment completed successfully for ${APP_NAME}" | tee -a "$DEPLOY_LOG"
 echo "--------------------------------------------" | tee -a "$DEPLOY_LOG"
