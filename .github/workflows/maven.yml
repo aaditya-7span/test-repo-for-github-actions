@@ -9,7 +9,17 @@ jobs:
 
     env:
       PROFILE: "staging"
-      ALLOWED_USERS: ${{ secrets.ALLOWED_USERS }}
+
+      # 🔧 Fill your details below manually for now
+      ALLOWED_USERS: "aadityaJatale"
+      EC2_USER: "ubuntu"
+      EC2_HOST: "ec2-65-1-132-62.ap-south-1.compute.amazonaws.com"
+      REMOTE_APP_PATH: "/home/ubuntu/build_jars"
+      SERVICE_NAME: "myapp"
+      EC2_SSH_KEY: |
+        -----BEGIN RSA PRIVATE KEY-----
+        (paste your PEM file contents here)
+        -----END RSA PRIVATE KEY-----
 
     steps:
       # Step 1: ✅ Access control
@@ -48,26 +58,24 @@ jobs:
       - name: Build JAR
         run: mvn -B clean package --file pom.xml
 
-      # Step 5: Setup SSH
+      # Step 5: Setup SSH connection
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" > ~/.ssh/id_rsa
+          echo "${{ env.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-        env:
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      # Step 6: Upload JAR
+      # Step 6: Upload JAR to EC2
       - name: Upload JAR to EC2
         run: |
           echo "📦 Uploading JAR file to EC2..."
           scp -i ~/.ssh/id_rsa -P 22 target/*.jar \
-          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.REMOTE_APP_PATH }}
+          ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:${{ env.REMOTE_APP_PATH }}
 
-      # Step 7: Deploy on EC2
+      # Step 7: Deploy on EC2 (Run deploy.sh)
       - name: Run deployment script on EC2
         run: |
           echo "🚀 Running deployment script on EC2..."
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+          ssh -i ~/.ssh/id_rsa ${{ env.EC2_USER }}@${{ env.EC2_HOST }} \
           "bash /opt/testiqo/deploy.sh"
