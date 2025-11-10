@@ -56,7 +56,7 @@ jobs:
       - name: Test SSH Connection
         run: |
           echo "Testing SSH connection..."
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo '✅ Connected to EC2 successfully!'"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'Connected to EC2 successfully!'"
 
       # Step 7: Upload Built JAR
       - name: Upload JAR to EC2
