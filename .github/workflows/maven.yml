@@ -18,7 +18,31 @@ jobs:
       SERVICE_NAME: "myapp"
       EC2_SSH_KEY: |
         -----BEGIN RSA PRIVATE KEY-----
-        (paste your PEM file contents here)
+        MIIEpQIBAAKCAQEAu1XBdu42f5n855SiF1+Y/03PR6whEtka/HxSh825MPMtI5qP
+        QIMDFDmV0iquTkTDkyNKQ3JFUOtML4lSUyKG7yz1LLzAn1X/cppcIPFXwvQZBXYv
+        wrIod9G7NraOuPmv6x3YWj1eSD8gfpSzK1cmpj09a8gbVm10Pl2WrEZLPUzxIj5S
+        sqDlajp+ZPPbSsHH0VBIzoMx7eILMYbDU1gRtLLznsIOCpZST8xE/rXhMbZeHIsg
+        Mg61kLb41nyNOy2RQmYM6U+7527EMlM4J+iCKkTXN++uIvqy/RVgNu7djtqkyMwa
+        dbnFpVU4u+gbJdC3B4eej+NeUe1CWiST2LgoJQIDAQABAoIBAEJA3/053lhek40r
+        ifAORUP1tts4SzIpSlwFdALHhTmEp3AyF3vPWeVrQEtmAON5elmtX3RfE5i8vuMJ
+        A+6XBXXNRqCd2NoBRii34uFbuZgfUEIYPGf1Lk7CBB4jjnJpDAhxM7UmgxO2D730
+        xTEMz4R3oCNgUBrO9w+fdcxTyARTeNR7d2NFETmHg6txaII8Htw+/mn6wwLl0KfH
+        O7E0d6fhFOyBTa2AhwIZb+3PEbm38+Tlm4Lbpc7ySHm8NntLI3D6a/sC5ltc9u2I
+        sFIrKf0110BS3c34iatfetyDjv7I5n1x735buawMFVi0CTn2XSDs4zgS88sAdtlv
+        KXQ8NsECgYEA5jA/yQ25z60UX7vZorO0kiBDVzQyyxFAHugI/JNXpHZeFl160a/P
+        ngyHGu4KR5KFoA6UD1kRtiwrMV7NGrsmfs4SZRxhJpbYN2BOH2AxRMJAKSfCd3fV
+        hce0r6WJYPVE+f9EbnLZMNw9WD4oEw1dtll1bbfztEuST196t1mYPb0CgYEA0Fdc
+        k2v+eQEchP4XrmZFJsE41EGyzSn7dVZe939jDHa4CgODKeaPE3xHgWq98JpsKyWx
+        9sxoBBG62/HVv7AOJ6MorhSPUQKHotxRa0bIW5leeGesZ+XP74MqaYbggsgEzztV
+        Hq0+SUji2IIQgYYWA6Ayyz3Kd1nf1/yE2dSSdokCgYEAn/oKaoWijIXCciJQx/XS
+        2feYNYPuhRjREmm6zSbtszwcebiwAgkI5tPYFcw30rQvMCTRm7UQTSZ3QlGbhCdr
+        QpefSywlDLerPxksUjv9IcdK5g9e5L6g49/+YFBQoNT1AjX5bjVdYsq9y5UvLsaM
+        SY30wbMlqTkYTxeRZtnap5UCgYEAlqsHLSoFfzbZjChBsgMN8Wf9FCtrBkpdKs9K
+        oIxEckgM8lj160BsqjfPcn1iXXUf0thQ6l2Kv56e1t7+qMDGi83H5pTBzGEa/CF+
+        1Cj9TpkMo+C94ulkxh7CdkxvYsUKDWAoP6YkDFWkj9UH4NO6aebZtPe7yzJ42jcp
+        UGsVfJkCgYEA5Sxi1a3CEqu1AN7WUz6SZJV521YxqHww/WrLf/KR7qq+bLWOHT6Y
+        QhteH7GK60yFegEfU7EHe8bqmypvL8w3NCHh/MHFGRu0SPIRIEdUNVtCtWF9mhDF
+        bgAslpJBw1Y4OsymoFn0/fHmtIv2rse40VvJp7S/HDFr5RQgujzAZ2A=
         -----END RSA PRIVATE KEY-----
 
     steps:
