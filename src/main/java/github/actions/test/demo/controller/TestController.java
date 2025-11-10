@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/")
-    w
     public String home() {
         return "Spring Boot is running successfully!  and this is new code";
     }
