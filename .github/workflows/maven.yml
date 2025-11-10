@@ -7,19 +7,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      PROFILE: "staging"
-      ALLOWED_USERS: "aaditya-7span"
-      EC2_USER: "ubuntu"
-      EC2_HOST: "ec2-65-1-132-62.ap-south-1.compute.amazonaws.com"
-      REMOTE_APP_PATH: "/home/ubuntu/build_jars"
-      SERVICE_NAME: "myapp"
-      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-
     steps:
+      # Step 1: Access Control
       - name: Check if actor is allowed
         run: |
-          allowed_users="${{ env.ALLOWED_USERS }}"
+          allowed_users="${{ secrets.ALLOWED_USERS }}"
           IFS=',' read -ra USERS <<< "$allowed_users"
           actor="${{ github.actor }}"
           is_allowed=false 
@@ -30,15 +22,17 @@ jobs:
             fi
           done
           if [[ "$is_allowed" == "false" ]]; then
-            echo "❌ User $actor is not allowed to run this job."
+            echo "User $actor is not allowed to run this job."
             exit 1
           else
-            echo "✅ Access granted. Running workflow as $actor"
+            echo "Access granted. Running workflow as $actor"
           fi
 
+      # Step 2: Checkout Repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 3: Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -46,29 +40,34 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # Step 4: Build the JAR
       - name: Build JAR
         run: mvn -B clean package --file pom.xml
 
+      # Step 5: Setup SSH Connection
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ env.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
+      # Step 6: Test SSH Connection
       - name: Test SSH Connection
         run: |
-          echo "🔑 Testing SSH connection..."
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "echo '✅ Connected to EC2 successfully!'"
+          echo "Testing SSH connection..."
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo '✅ Connected to EC2 successfully!'"
 
+      # Step 7: Upload Built JAR
       - name: Upload JAR to EC2
         run: |
-          echo "📦 Uploading JAR file to EC2..."
+          echo "Uploading JAR file to EC2..."
           scp -i ~/.ssh/id_rsa -P 22 target/*.jar \
-          ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:${{ env.REMOTE_APP_PATH }}
+          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.REMOTE_APP_PATH }}
 
+      # Step 8: Run Deployment Script on EC2
       - name: Run deployment script on EC2
         run: |
-          echo "🚀 Running deployment script on EC2..."
-          ssh -i ~/.ssh/id_rsa ${{ env.EC2_USER }}@${{ env.EC2_HOST }} \
+          echo "Running deployment script on EC2..."
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
           "bash /opt/testiqo/deploy.sh"
