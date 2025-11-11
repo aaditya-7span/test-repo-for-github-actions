@@ -61,7 +61,7 @@ jobs:
       # Step 7: Upload Built JAR
       - name: Upload JAR to EC2
         run: |
-          echo "📦Uploading JAR file to EC2..."
+          echo "Uploading JAR file to EC2..."
           scp -i ~/.ssh/id_rsa -P 22 target/*.jar \
           ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/build_jars
 
