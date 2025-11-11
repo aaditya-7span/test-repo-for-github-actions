@@ -8,6 +8,6 @@ public class TestController {
 
     @GetMapping("/")
     public String home() {
-        return "Spring Boot is running successfully!";
+        return "Spring Boot is running successfully! and these is a new thing";
     }
 }
