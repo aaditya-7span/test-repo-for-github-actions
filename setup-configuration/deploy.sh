@@ -5,9 +5,9 @@ set -o pipefail
 
 APP_NAME="volisi"
 BUILD_DIR="/home/ubuntu/build_jars"
-PROD_DIR="/opt/testiqo/prod_jars"
-BACKUP_DIR="/opt/testiqo/prod_jars_backup"
-APP_LOG="/opt/testiqo/logs/${APP_NAME}.log"
+PROD_DIR="/opt/volisi/prod_jars"
+BACKUP_DIR="/opt/volisi/prod_jars_backup"
+APP_LOG="/opt/volisi/logs/${APP_NAME}.log"
 
 mkdir -p "$BUILD_DIR" "$PROD_DIR" "$BACKUP_DIR" "/opt/testiqo/logs"
 
