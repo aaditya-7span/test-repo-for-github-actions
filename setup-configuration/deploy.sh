@@ -11,14 +11,23 @@ APP_LOG="/opt/testiqo/logs/${APP_NAME}.log"
 
 mkdir -p "$BUILD_DIR" "$PROD_DIR" "$BACKUP_DIR" "/opt/testiqo/logs"
 
-echo "Stopping existing process..."
+echo "Starting deployment for ${APP_NAME}"
+
+echo "Stopping existing process (if any)..."
 pkill -f "${APP_NAME}.jar" 2>/dev/null || echo "No running process found."
 
-# ---- BACKUP OLD JAR ----
 if [ -f "$PROD_DIR/${APP_NAME}.jar" ]; then
-  echo "Backing up current JAR as previous version..."
-  cp -f "$PROD_DIR/${APP_NAME}.jar" "$BACKUP_DIR/${APP_NAME}_previous.jar"
-  echo "Previous JAR stored at: $BACKUP_DIR/${APP_NAME}_previous.jar"
+  echo "Backing up current JAR with timestamp..."
+
+  # Remove any existing backup before creating new one
+  echo "Cleaning up old backup (if any)..."
+  rm -f "$BACKUP_DIR"/*.jar 2>/dev/null || true
+
+  # Create new timestamped backup file
+  TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+  BACKUP_NAME="${APP_NAME}_${TIMESTAMP}.jar"
+  cp -f "$PROD_DIR/${APP_NAME}.jar" "$BACKUP_DIR/$BACKUP_NAME"
+  echo "Backup created: $BACKUP_DIR/$BACKUP_NAME"
 else
   echo "No existing JAR found in $PROD_DIR — skipping backup."
 fi
@@ -30,9 +39,12 @@ if [ -z "$NEW_JAR" ]; then
   exit 1
 fi
 
-mv "$NEW_JAR" "$PROD_DIR/${APP_NAME}.jar"
+echo "Moving new JAR to production directory..."
+mv -f "$NEW_JAR" "$PROD_DIR/${APP_NAME}.jar"
+echo "New JAR moved successfully."
 
 # ---- START APPLICATION ----
+echo "Starting ${APP_NAME}..."
 nohup java -jar "$PROD_DIR/${APP_NAME}.jar" > "$APP_LOG" 2>&1 &
 
 # ---- VERIFY ----
@@ -42,3 +54,5 @@ if pgrep -f "${APP_NAME}.jar" > /dev/null; then
 else
   echo "Application failed to start. Check logs at $APP_LOG"
 fi
+
+echo "Deployment completed successfully for ${APP_NAME}"
