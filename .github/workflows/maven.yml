@@ -63,7 +63,7 @@ jobs:
         run: |
           echo "Uploading JAR file to EC2..."
           scp -i ~/.ssh/id_rsa -P 22 target/*.jar \
-          ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/build_jars
+          ubuntu@${{ secrets.EC2_HOST }}:/opt/volisi/build_jars
 
 
       # Step 8: Run Deployment Script on EC2
