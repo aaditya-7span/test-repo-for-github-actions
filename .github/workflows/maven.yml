@@ -1,4 +1,4 @@
-name: Java Maven Build & EC2 Deployment
+name: Volisi staging deployment
 
 on:
   workflow_dispatch:
